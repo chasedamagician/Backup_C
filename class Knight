@@ -1,0 +1,128 @@
+class Knight:
+    def __init__(self, name=None, age=None, health=100, items=None, strength = 1):
+        self.name = name
+        self.age = age
+        self.health = health
+        self.strength = strength
+        if items is None:
+            self.inventory = []
+        self.inventory = items
+        self.weapon = None
+
+    def __str__(self):
+        return f'Knight, N: {self.name}, A: {self.age}, H:{self.health}'
+
+    def __repr__(self):
+        return '{}'.format(str(self))
+
+    def __getitem__(self, other):
+        return self.inventory[other]
+
+    def __eq__(self, other):
+        if isinstance(other, Knight):
+            return (self.age == other.age) and (self.name == other.name)
+        raise NotImplementedError
+    def greeter(self, name=None):
+        """Perform a greeting.
+
+        Args:
+            name(str, optional): If it is a string, returns a customized greeting.
+                Defaults to None.
+
+        Returns:
+            str with the text of the greeting
+        """
+        if isinstance(name,str):
+            return f'Greetings Sir {name}, my name is King {self.name}. I will slay you'
+        return f'You Sir {self.name} are a dead man walking'
+    def __len__(self):
+        return self.age
+    def attack(self):
+        print("Have at thee!!!")
+        if self.weapon== None:
+            return self.strength * 2
+        if self.weapon == Sword:
+            return self.strengh * 10
+        return self.strength * 2
+    @property
+    def damage(self):
+        return self.attack
+    @damage.setter
+    def damage(self,other):
+        self.strength = other
+    @classmethod
+    def from_file(cls, filename):
+        new_knight = cls()
+        new_knight.load(filename)
+        return new_knight
+    def clone(self):
+        my_knight_clone = Knight(age = self.age, health = self.health, name = self.name)
+        return my_knight_clone
+    def save(self, filename):
+        with open(filename, 'w') as outfile:
+            save_string = '{} {} {}\n'.format(self.name, self.age, self.health)
+            outfile.write(save_string)
+            outfile.write(' '.join(self.inventory))
+
+    def load(self, filename):
+        with open(filename, 'r') as infile:
+            load_list = infile.readlines()
+
+        data_list = load_list[0].split()
+        self.name = data_list[0]
+        self.age = int(data_list[1])
+        self.health = int(data_list[2])
+        self.inventory = load_list[1].split()
+    def equip(self, weapon):
+        if not isinstance(weapon, Sword):
+            print("This is no weapon!")
+            return None
+        if weapon.durability <= 0:
+            print("All hope is Lost!")
+            return None
+        if self.weapon is not None:
+            print("You already have a weapon!")
+            return None
+        self.weapon = weapon
+    def unequip(self,weapon):
+        if self.weapon is None:
+            print("You have not weapon to unequip")
+        if weapon.status == 'cursed':
+            print("This weapon is cursed!")
+        self.weapon = None
+class Sword:
+    def __init__(self,name = None,durability = 10, damage = None, status='normal'):
+        self.name = name
+        self.durability = durability
+        self.damage = damage
+        self.status=status
+    def __repr__(self):
+        out_string = 'N: {}, D: {}, Du: {}, S: {}'.format(self.name,self.damage, self.durability, self.status)
+        return out_string
+my_knight = Knight("Arthur", 29, items=['Bomb', 'Sword', 'Rabbit'], strength =2)
+my_sword = Sword("Excalibur",10)
+
+print(my_knight.damage)
+print(my_sword)
+my_knight.equip(my_sword)
+my_clone = my_knight.clone()
+my_army = (Knight(name='John', age = 17),
+Knight(name='Robert', age = 34), 
+Knight(name='Albert', age =21))
+
+range_list = [knight.name for knight in my_army]
+john, robert, albert = my_army
+print(f'{john}\n{robert}\n{albert}\n')
+knight_summary = {knight.name: knight.age for knight in my_army}
+print(knight_summary)
+knight_tuple = tuple(knight.name for knight in my_army)
+print(knight_tuple)
+my_enemy = Knight("Arthur", 29, items=['Bomb', 'Sword', 'Rabbit'])
+print(len(my_knight))
+print(my_knight.greeter('John'))
+print(my_knight.attack())
+print(my_knight.inventory[2])
+for item in my_knight:
+    print(item)
+print(my_knight == my_enemy)
+print(my_knight.damage())
