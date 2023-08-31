@@ -1,0 +1,19 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -I.
+
+SRCS = main.c DPV_setup.c CV_setup.c SqW_setup.c setup.c
+OBJS = $(SRCS:.c=.o)
+EXECUTABLE = myprogram
+
+.PHONY: all clean
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJS)
+    $(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+    $(CC) $(CFLAGS) -c $<
+
+clean:
+    rm -f $(OBJS) $(EXECUTABLE)
